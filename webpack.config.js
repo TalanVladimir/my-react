@@ -36,10 +36,11 @@ module.exports = (env = false, argv = false) => {
   return {
     mode: isProd ? "production" : isDev && "development",
 
-    entry: { index: "./src/index.tsx" },
+    entry: "./src/index.tsx",
 
     output: {
       filename: isProd ? "main-[hash:8].js" : undefined,
+      publicPath: "/",
     },
 
     resolve: { extensions: [".js", ".jsx", ".ts", ".tsx"] },
@@ -94,6 +95,7 @@ module.exports = (env = false, argv = false) => {
 
     devServer: {
       open: true,
+      historyApiFallback: true,
     },
   };
 };
