@@ -44,7 +44,6 @@ module.exports = (env = false, argv = false) => {
 
     output: {
       filename: isProd ? "main-[fullhash:8].bundle.js" : undefined,
-      publicPath: "/",
       clean: true,
     },
 
