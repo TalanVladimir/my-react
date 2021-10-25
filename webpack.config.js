@@ -25,7 +25,7 @@ module.exports = (env = false, argv = false) => {
     if (isProd) {
       plugins.push(
         new MiniCssExtractPlugin({
-          filename: "main-[hash:8].css",
+          filename: "main-[fullhash:8].css",
         })
       );
     }
@@ -36,11 +36,16 @@ module.exports = (env = false, argv = false) => {
   return {
     mode: isProd ? "production" : isDev && "development",
 
-    entry: "./src/index.tsx",
+    entry: {
+      index: {
+        import: "./src/index.tsx",
+      },
+    },
 
     output: {
-      filename: isProd ? "main-[hash:8].js" : undefined,
+      filename: isProd ? "main-[fullhash:8].bundle.js" : undefined,
       publicPath: "/",
+      clean: true,
     },
 
     resolve: { extensions: [".js", ".jsx", ".ts", ".tsx"] },
@@ -90,6 +95,8 @@ module.exports = (env = false, argv = false) => {
         },
       ],
     },
+
+    performance: { maxEntrypointSize: 512000, maxAssetSize: 512000 },
 
     plugins: getPlugins(),
 
