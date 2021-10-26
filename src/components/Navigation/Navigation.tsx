@@ -10,7 +10,7 @@ import "./styles.scss";
 const Navigation = () => {
   return (
     <Navbar sticky='top' bg='dark' variant='dark' className='navbar-inverse'>
-      <Container>
+      <Container className='flex-wrap'>
         <Navbar.Brand>
           <img
             src={Icon}
