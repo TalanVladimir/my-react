@@ -1,39 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Form, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, login } from "../../services/firebase";
 
 import "./styles.scss";
 
 const Login = () => {
-  const [login, setLogin] = useState<number>(0);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [user, loading, error] = useAuthState(auth);
+  const history = useHistory();
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    if (user) history.replace("/buy");
+  }, [user, loading]);
 
   const handleSubmit = (event: { preventDefault: () => void }) => {
-    setLogin(login + 1);
     event.preventDefault();
+    login(email, password);
   };
 
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group>
-        <Form.Control type='text' placeholder='Login' />
+        <Form.Control
+          type='text'
+          placeholder='Email'
+          onChange={(e) => setEmail(e.target.value)}
+        />
       </Form.Group>
 
       <Form.Group>
-        <Form.Control type='password' placeholder='Password' />
+        <Form.Control
+          type='password'
+          placeholder='Password'
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </Form.Group>
-
-      <Form.Group>
-        <Button variant='primary' type='submit'>
-          Try Login {login == 0 ? "" : login}
-        </Button>{" "}
-        <Link to='/buy'>
-          <Button>Main</Button>
-        </Link>{" "}
-        <Link to='/404'>
-          <Button>404</Button>
-        </Link>
-      </Form.Group>
+      <Button variant='primary' type='submit'>
+        Login
+      </Button>
+      <Button
+        variant='secondary'
+        type='button'
+        onClick={() => {
+          history.replace("/register");
+        }}
+      >
+        Register Page
+      </Button>
     </Form>
   );
 };
