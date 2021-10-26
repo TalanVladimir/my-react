@@ -6,12 +6,10 @@ import {
   LoginPage,
   BuyPage,
   FinanciesPage,
-  AccountPage,
+  ProfilePage,
 } from "../../pages";
 
 import ErrorBoundry from "../ErrorBoundry";
-
-import { logout } from "../../services/firebase";
 
 import "./styles.scss";
 
@@ -26,9 +24,10 @@ const App = () => {
             <Redirect to='/login' />
           </Route>
           <Route exact path='/new-react/' component={LoginPage} />
+
           <Route path='/buy' component={BuyPage} />
           <Route path='/financies' component={FinanciesPage} />
-          <Route path='/account' component={AccountPage} />
+          <Route path='/account' component={ProfilePage} />
           <Route path='*'>
             <Redirect to='/buy' />
           </Route>
