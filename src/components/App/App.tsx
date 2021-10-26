@@ -1,15 +1,17 @@
 import React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import {
+  RegisterPage,
   LoginPage,
   BuyPage,
   FinanciesPage,
   AccountPage,
-  NotFoundPage,
 } from "../../pages";
 
 import ErrorBoundry from "../ErrorBoundry";
+
+import { logout } from "../../services/firebase";
 
 import "./styles.scss";
 
@@ -18,13 +20,18 @@ const App = () => {
     <ErrorBoundry>
       <BrowserRouter>
         <Switch>
-          <Route exact path='/' component={LoginPage} />
+          <Route exact path='/register' component={RegisterPage} />
+          <Route exact path='/login' component={LoginPage} />
+          <Route exact path='/logout'>
+            <Redirect to='/login' />
+          </Route>
           <Route exact path='/new-react/' component={LoginPage} />
-          <Route exact path='/logout' component={LoginPage} />
           <Route path='/buy' component={BuyPage} />
           <Route path='/financies' component={FinanciesPage} />
           <Route path='/account' component={AccountPage} />
-          <Route path='*' component={NotFoundPage} />
+          <Route path='*'>
+            <Redirect to='/buy' />
+          </Route>
         </Switch>
       </BrowserRouter>
     </ErrorBoundry>
