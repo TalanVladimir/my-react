@@ -1,13 +1,13 @@
 import React, { Fragment } from "react";
 
 import Navigation from "../../components/Navigation";
-import Account from "../../components/Account";
+import Profile from "../../components/Profile";
 
 const AccountPage = () => {
   return (
     <Fragment>
       <Navigation />
-      <Account />
+      <Profile />
     </Fragment>
   );
 };
