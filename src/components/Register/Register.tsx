@@ -4,7 +4,7 @@ import { Form, Button } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, login } from "../../services/firebase";
+import { auth, register } from "../../services/firebase";
 
 import "./styles.scss";
 
@@ -24,11 +24,11 @@ const Register = () => {
 
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    login(email, password);
+    register(email, password);
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form className='register' onSubmit={handleSubmit}>
       <Form.Group>
         <Form.Control
           type='text'
