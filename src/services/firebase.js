@@ -25,14 +25,23 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 const login = async (email, password) => {
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      // Signed in
       const user = userCredential.user;
-      // alert(JSON.stringify(user));
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
     });
+};
+
+import { updateProfile } from "firebase/auth";
+
+const update = async (data) => {
+  const user = await auth.currentUser;
+
+  if (user === null) return;
+  updateProfile(user, data)
+    .then(() => {})
+    .catch((error) => {});
 };
 
 import { signOut } from "firebase/auth";
@@ -42,4 +51,4 @@ const logout = async () => {
     .catch((error) => {});
 };
 
-export { db, auth, login, logout };
+export { db, auth, register, login, update, logout };
