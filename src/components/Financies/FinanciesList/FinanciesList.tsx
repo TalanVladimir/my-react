@@ -8,17 +8,11 @@ const FinanciesList = () => {
     <section className='financies'>
       <Container>
         Financies
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        Financies
-        <br />
+        <img
+          src='https://thumbs.dreamstime.com/b/under-construction-10012274.jpg'
+          className='rounded img-fluid align-self-center'
+          alt='...'
+        />
       </Container>
     </section>
   );
