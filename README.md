@@ -4,13 +4,10 @@ Application for financies management
 
 Packages:
 
-* React,
-* Redux,
-* Babel,
-* WebPack,
-* TypeScript,
-* BootStrap
-
-Future:
-
-* Firebase
+- React,
+- Redux,
+- Babel,
+- WebPack,
+- TypeScript,
+- BootStrap
+- Firebase
