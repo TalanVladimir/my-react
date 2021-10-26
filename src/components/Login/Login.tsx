@@ -12,7 +12,13 @@ const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [user, loading, error] = useAuthState(auth);
+
+  const [loadDef, setLoadDef] = useState(false);
+
   const history = useHistory();
+
+  const defEmail = "batarejka@gmail.com";
+  const defPassword = "mypassword";
 
   useEffect(() => {
     if (loading) {
@@ -28,9 +34,20 @@ const Login = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form
+      className='login'
+      ref={() => {
+        if (!loadDef) {
+          setEmail(defEmail);
+          setPassword(defPassword);
+          setLoadDef(true);
+        }
+      }}
+      onSubmit={handleSubmit}
+    >
       <Form.Group>
         <Form.Control
+          defaultValue={defEmail}
           type='text'
           placeholder='Email'
           onChange={(e) => setEmail(e.target.value)}
@@ -39,6 +56,7 @@ const Login = () => {
 
       <Form.Group>
         <Form.Control
+          defaultValue={defPassword}
           type='password'
           placeholder='Password'
           onChange={(e) => setPassword(e.target.value)}
