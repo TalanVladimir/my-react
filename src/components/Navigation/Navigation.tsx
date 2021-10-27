@@ -42,7 +42,7 @@ const Navigation = () => {
           </Nav.Item>
           <Nav.Item>
             <Nav.Link as={Link} to='/account'>
-              Account
+              Profile
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
