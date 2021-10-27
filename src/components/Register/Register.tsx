@@ -12,6 +12,8 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, loading, error] = useAuthState(auth);
+  const [wrong, setWrong] = useState<boolean>(false);
+
   const history = useHistory();
 
   useEffect(() => {
@@ -25,6 +27,11 @@ const Register = () => {
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     register(email, password);
+
+    setWrong(true);
+    setTimeout(() => {
+      setWrong(false);
+    }, 2000);
   };
 
   return (
@@ -44,7 +51,7 @@ const Register = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </Form.Group>
-      <Button variant='primary' type='submit'>
+      <Button variant='primary' type='submit' disabled={wrong}>
         Register
       </Button>
       <Button
