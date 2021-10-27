@@ -44,6 +44,14 @@ const update = async (data) => {
     .catch((error) => {});
 };
 
+import { sendEmailVerification } from "@firebase/auth";
+const send = async () => {
+  const user = await auth.currentUser;
+
+  if (user === null) return;
+  sendEmailVerification(user);
+};
+
 import { signOut } from "firebase/auth";
 const logout = async () => {
   signOut(auth)
@@ -51,4 +59,4 @@ const logout = async () => {
     .catch((error) => {});
 };
 
-export { db, auth, register, login, update, logout };
+export { db, auth, register, login, update, send, logout };
