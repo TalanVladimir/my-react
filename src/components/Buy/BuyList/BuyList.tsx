@@ -6,6 +6,10 @@ import "./styles.scss";
 import { db, auth } from "../../../services/firebase";
 import { collection, addDoc } from "firebase/firestore";
 
+import BuyItem from "../BuyItem";
+
+import Spinner from "../../Spinner";
+
 async function newDoc() {
   try {
     const docRef = await addDoc(collection(db, "accounts"), {
@@ -21,18 +25,56 @@ async function newDoc() {
 
 newDoc();
 
+const defArray = [
+  { id: 1, category: "moloko", product: "moloko", price: "500" },
+  { id: 21, category: "moloko", product: "moloko", price: "1" },
+  { id: 33, category: "moloko", product: "moloko", price: "2555" },
+  { id: 44, category: "miaso", product: "moloko", price: "105" },
+  { id: 53, category: "miaso", product: "moloko", price: "25" },
+  { id: 6, category: "miaso", product: "moloko", price: "25" },
+  { id: 7, category: "miaso", product: "moloko", price: "25" },
+  { id: 8, category: "miaso", product: "moloko", price: "25" },
+];
+
 const BuyList = () => {
+  const [data, setData] = useState(defArray);
+  const [completed, setcompleted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setData(defArray);
+
+    setcompleted(true);
+  }, []);
+
   return (
-    <section className='buyList'>
-      <Container>
-        Buy
-        <img
-          src='https://thumbs.dreamstime.com/b/under-construction-10012274.jpg'
-          className='rounded img-fluid align-self-center'
-          alt='...'
-        />
-      </Container>
-    </section>
+    <>
+      {!completed ? (
+        <Spinner />
+      ) : (
+        <div className='table-responsive'>
+          <Container className='buyList mt-1 mb-1'>
+            <table className='table table-striped'>
+              <thead>
+                <tr>
+                  <th scope='col'>Nr.</th>
+                  <th scope='col'>Category</th>
+                  <th scope='col'>Product</th>
+                  <th scope='col'>Costs</th>
+                  <th scope='col'>Event</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((item, index) => (
+                  <BuyItem key={item.id} index={index}>
+                    {item}
+                  </BuyItem>
+                ))}
+              </tbody>
+            </table>
+          </Container>
+        </div>
+      )}
+    </>
   );
 };
 

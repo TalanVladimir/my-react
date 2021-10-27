@@ -1,2 +1,51 @@
+$sizes: (
+  "xs": 320px,
+  "sm": 576px,
+  "md": 768px,
+  "lg": 992px,
+  "xl": 1200px,
+);
+
+@mixin media($minmax, $media) {
+  @each $size, $resolution in $sizes {
+    @if $media == $size {
+      @media only screen and (#{$minmax}-width: $resolution) {
+        @content;
+      }
+    }
+  }
+}
+
+@include media("max", "md") {
+}
+
 .buyList {
+  thead {
+    text-align: center;
+  }
+
+  th {
+    &:nth-child(1) {
+      width: 10%;
+    }
+
+    &:nth-child(2),
+    &:nth-child(3),
+    &:nth-child(4) {
+      width: 30%;
+    }
+
+    &:nth-child(5) {
+      width: 5%;
+    }
+  }
+
+  tbody {
+    text-align: center;
+
+    tr,
+    th {
+      vertical-align: middle;
+    }
+  }
 }
