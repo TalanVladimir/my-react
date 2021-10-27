@@ -1,6 +1,6 @@
 .register{background:#fff;top:50%;margin-top:-95px;height:190px;left:50%;margin-left:-140px;position:absolute;width:280px;padding:10px;text-align:center;border-radius:7px;border:3px solid #000;display:flex;flex-direction:column;gap:5px;font-weight:900}.register input{border-radius:5px;color:#a363df;font-weight:900;text-align:center;background:#ffb7b7;border:0px solid #000}.register a,.register a:link,.register a:visited,.register a:hover,.register a:active{text-decoration:none;color:#fff}
 
-.login{background:#fff;top:50%;margin-top:-95px;height:190px;left:50%;margin-left:-140px;position:absolute;width:280px;padding:10px;text-align:center;border-radius:7px;border:3px solid #000;display:flex;flex-direction:column;gap:5px;font-weight:900}.login input{border-radius:5px;color:#a363df;font-weight:900;text-align:center;background:#ffb7b7;border:0px solid #000}.login a,.login a:link,.login a:visited,.login a:hover,.login a:active{text-decoration:none;color:#fff}
+.login{background:#fff;top:50%;margin-top:-95px;height:190px;left:50%;margin-left:-140px;position:absolute;width:280px;padding:10px;text-align:center;border-radius:7px;border:3px solid #000;display:flex;flex-direction:column;gap:5px;font-weight:900}.login input{border-radius:5px;color:#a363df;font-weight:900;text-align:center;background:#ffb7b7;border:0px solid #000}.login input.wrong{color:#f00}.login a,.login a:link,.login a:visited,.login a:hover,.login a:active{text-decoration:none;color:#fff}
 
 
 
