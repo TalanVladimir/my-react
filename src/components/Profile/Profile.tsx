@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Container, Form, Row } from "react-bootstrap";
 
-import { auth, update } from "../../services/firebase";
+import { auth, update, send } from "../../services/firebase";
 
 import { User } from "@firebase/auth/dist/auth-public";
 
@@ -15,13 +15,11 @@ const Account = () => {
   const [name, setName] = useState<string | undefined>(undefined);
   const [email, setEmail] = useState<string | undefined>(undefined);
   const [photo, setPhoto] = useState<string | undefined>(defPhoto);
-  const [verify, setVerify] = useState<string | undefined>(undefined);
+  const [verify, setVerify] = useState<boolean>(false);
 
   const [completed, setcompleted] = useState<boolean>(false);
 
   const [user, setUser] = useState<User | null>(null);
-
-  // update({ displayName: "HamsteR" });
 
   const updateUser = async () => {
     auth.onAuthStateChanged(async (user) => {
@@ -43,10 +41,8 @@ const Account = () => {
           if (user.displayName != null) setName(user.displayName);
           if (user.email != null) setEmail(user.email);
           if (user.photoURL != null) setPhoto(user.photoURL);
-          if (user.emailVerified != null)
-            user.emailVerified
-              ? setVerify("Verified")
-              : setVerify("Not Verified");
+          if (user.emailVerified != false) setVerify(true);
+          else setVerify(false);
 
           setcompleted(true);
         }
@@ -54,28 +50,32 @@ const Account = () => {
     }, 1000);
   }, [user]);
 
+  const handleSubmit = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    if (name != null && name.length > 0 && photo != null && photo.length > 0) {
+      const updateData = { displayName: name, photoURL: photo };
+
+      setcompleted(false);
+      update(updateData).then(() => {
+        setcompleted(true);
+      });
+    }
+  };
+
   return (
     <>
       {!completed ? (
         <Spinner />
       ) : (
         <section className='profile'>
-          <Form
-          // ref={() => {
-          //   if (!loadDef) {
-          //     setEmail(defEmail);
-          //     setPassword(defPassword);
-          //     setLoadDef(true);
-          //   }
-          // }}
-          // onSubmit={handleSubmit}
-          >
+          <Form onSubmit={handleSubmit}>
             <Container className='rounded bg-white mt-1 mb-1'>
               <Row className='justify-content-center'>
                 <div className='col-md-3 border-right'>
                   <div className='d-flex flex-column align-items-center text-center p-3 py-5'>
                     <img
-                      className='rounded-circle mt-5'
+                      className='rounded-circle mt-3'
                       width='150px'
                       src={photo}
                     />
@@ -93,9 +93,9 @@ const Account = () => {
                       <div className='col-md-12'>
                         <label className='labels'>Display Name</label>
                         <input
-                          readOnly
                           type='text'
                           className='form-control'
+                          onChange={(event) => setName(event?.target.value)}
                           value={name}
                         />
                       </div>
@@ -104,21 +104,10 @@ const Account = () => {
                       <div className='col-md-12'>
                         <label className='labels'>Photo url</label>
                         <input
-                          readOnly
                           type='text'
                           className='form-control'
-                          value={photo === defPhoto ? "loading" : photo}
-                        />
-                      </div>
-                    </div>
-                    <div className='row mt-3'>
-                      <div className='col-md-12'>
-                        <label className='labels'>Email Verify</label>
-                        <input
-                          readOnly
-                          type='text'
-                          className='form-control'
-                          value={verify}
+                          onChange={(event) => setPhoto(event?.target.value)}
+                          value={photo}
                         />
                       </div>
                     </div>
@@ -136,9 +125,19 @@ const Account = () => {
                     <div className='mt-5 text-center'>
                       <button
                         className='btn btn-primary profile-button'
-                        type='button'
+                        type='submit'
                       >
-                        Save Profile
+                        Update Profile
+                      </button>{" "}
+                      <button
+                        className='btn btn-primary profile-button'
+                        type='button'
+                        disabled={verify}
+                        onClick={() => {
+                          send();
+                        }}
+                      >
+                        Verify Email
                       </button>
                     </div>
                   </div>
