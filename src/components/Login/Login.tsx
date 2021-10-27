@@ -12,13 +12,17 @@ const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [user, loading, error] = useAuthState(auth);
-
-  const [loadDef, setLoadDef] = useState(false);
+  const [wrong, setWrong] = useState<boolean>(false);
 
   const history = useHistory();
 
   const defEmail = "batarejka@gmail.com";
   const defPassword = "mypassword";
+
+  useEffect(() => {
+    setEmail(defEmail);
+    setPassword(defPassword);
+  }, []);
 
   useEffect(() => {
     if (loading) {
@@ -28,28 +32,28 @@ const Login = () => {
     if (user) history.replace("/buy");
   }, [user, loading]);
 
-  const handleSubmit = (event: { preventDefault: () => void }) => {
+  useEffect(() => {
+    if (error) {
+      alert("error detected");
+    }
+  }, [error]);
+
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
     login(email, password);
+
+    setTimeout(() => setWrong(true), 500);
   };
 
   return (
-    <Form
-      className='login'
-      ref={() => {
-        if (!loadDef) {
-          setEmail(defEmail);
-          setPassword(defPassword);
-          setLoadDef(true);
-        }
-      }}
-      onSubmit={handleSubmit}
-    >
+    <Form className='login' onSubmit={handleSubmit}>
       <Form.Group>
         <Form.Control
           defaultValue={defEmail}
           type='text'
           placeholder='Email'
+          value={email}
+          className={wrong ? "wrong" : ""}
           onChange={(e) => setEmail(e.target.value)}
         />
       </Form.Group>
@@ -59,6 +63,8 @@ const Login = () => {
           defaultValue={defPassword}
           type='password'
           placeholder='Password'
+          value={password}
+          className={wrong ? "wrong" : ""}
           onChange={(e) => setPassword(e.target.value)}
         />
       </Form.Group>

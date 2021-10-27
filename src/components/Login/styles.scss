@@ -25,6 +25,10 @@ $borders-radius: 5px;
     text-align: center;
     background: rgb(255, 183, 183);
     border: 0px solid #000;
+
+    &.wrong {
+      color: #f00;
+    }
   }
 
   a,
