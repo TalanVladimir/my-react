@@ -7,7 +7,7 @@
 
 .buyList thead{text-align:center}.buyList th:nth-child(1){width:2%}.buyList th:nth-child(2),.buyList th:nth-child(3),.buyList th:nth-child(4){width:28%}.buyList th:nth-child(5){width:14%}.buyList tbody{text-align:center}.buyList tbody tr,.buyList tbody th{vertical-align:middle}
 
-.buyItem input{width:auto;text-align:center}.buyItem svg{width:25px;height:25px;margin:2px}.buyItem .buttons{display:flex}
+.buyItem input{width:auto;text-align:center}.buyItem svg{width:25px;height:25px}.buyItem .buttons{display:flex;justify-content:center;gap:10px}
 
 
 
