@@ -5,9 +5,9 @@
 .login{background:#fff;top:50%;margin-top:-96px;height:192px;left:50%;margin-left:-140px;position:absolute;width:280px;padding:10px;text-align:center;border-radius:7px;border:3px solid #000;display:flex;flex-direction:column;gap:5px;font-weight:900}.login input{text-align:center}.login a,.login a:link,.login a:visited,.login a:hover,.login a:active{text-decoration:none;color:#fff}
 
 
-.buyList thead{text-align:center}.buyList th:nth-child(1){width:2%}.buyList th:nth-child(2),.buyList th:nth-child(3),.buyList th:nth-child(4){width:28%}.buyList th:nth-child(5){width:14%}.buyList .buttons svg{width:20px;height:20px}.buyList tbody{text-align:center}.buyList tbody tr,.buyList tbody th{vertical-align:middle}
+.buyList thead{text-align:center}.buyList thead .buttons svg:nth-child(1){margin-right:10px;width:30px;height:30px}.buyList th:nth-child(1){width:2%}.buyList th:nth-child(2),.buyList th:nth-child(3),.buyList th:nth-child(4){width:28%}.buyList th:nth-child(5){width:14%}.buyList tbody{text-align:center}.buyList tbody tr,.buyList tbody th{vertical-align:middle}
 
-.buyItem input{width:auto;text-align:center}.buyItem svg{width:25px;height:25px}.buyItem .buttons{display:flex;justify-content:center;gap:10px}
+.buyItem input{width:auto;text-align:center}.buyItem svg{width:30px;height:30px}.buyItem .buttons{display:flex;justify-content:center;gap:10px}
 
 
 
