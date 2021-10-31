@@ -1,146 +1,202 @@
-import React, { useState, useEffect } from "react";
-import { Container, Button } from "react-bootstrap";
+import React, { Fragment, useState, useEffect } from "react";
+import { Container, Table, Button, Tab } from "react-bootstrap";
 
 import "./styles.scss";
 
-import { db, auth } from "../../../services/firebase";
-import { collection, addDoc } from "firebase/firestore";
-
-import BuyItem from "../BuyItem";
+import { db } from "../../../services/firebase";
+import {
+  query,
+  where,
+  collection,
+  doc,
+  addDoc,
+  setDoc,
+  getDocs,
+  deleteDoc,
+  DocumentData,
+  QuerySnapshot,
+} from "firebase/firestore";
 
 import Spinner from "../../Spinner";
+import BuyItem from "../BuyItem";
+import BuyModify from "../BuyModify";
 
-async function newDoc() {
-  try {
-    const docRef = await addDoc(collection(db, "accounts"), {
-      first: "Name",
-      last: "Surname",
-      born: 1815,
-    });
-    console.log("Document written with ID: ", docRef.id);
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
-}
+const buyRef = collection(db, "buy");
 
-newDoc();
+const defItem = { category: "", product: "", multiply: "", price: "" };
 
-const defArray = [
-  { id: 1, category: "1 category", product: "1 product", price: "1" },
-  { id: 2, category: "2 category", product: "2 product", price: "2" },
-  { id: 3, category: "3 category", product: "3 product", price: "3" },
-  { id: 4, category: "4 category", product: "4 product", price: "4" },
-  { id: 5, category: "5 category", product: "5 product", price: "5" },
-];
+import Item from "../Item";
 
 const BuyList = () => {
-  const [data, setData] = useState(defArray);
+  const [data, setData] = useState<Array<Item>>([]);
+  const [current, setCurrent] = useState({});
   const [completed, setcompleted] = useState<boolean>(false);
 
-  useEffect(() => {
-    setData(defArray);
-    // setcompleted(true);
-    const pushArray = defArray.sort((a, b) => {
-      return a.id - b.id;
-    });
+  const [display, setDisplay] = useState<string>("");
 
-    setData(pushArray);
+  useEffect(() => {
+    getData();
   }, []);
 
   useEffect(() => {
     setcompleted(true);
   }, [data]);
 
-  const addItem = () => {
-    setcompleted(false);
-
-    const getId = defArray.reduce((max: number, array) => {
-      if (array.id > max) max = array.id;
-      return max;
-    }, 0);
-
-    const newArray = [...data];
-
-    newArray.push({
-      id: getId + 1,
-      category: "",
-      product: "",
-      price: "",
+  const fetchSnapshot = (
+    querySnapshot: QuerySnapshot<DocumentData> | any[]
+  ) => {
+    const newArray: Array<Item> = [];
+    querySnapshot.forEach((doc: any) => {
+      const { id, category, product, multiply, price } = doc.data();
+      const getItem = {
+        id,
+        category,
+        product,
+        multiply,
+        price,
+      };
+      newArray.push(getItem);
     });
 
-    setData(newArray);
+    const pushArray = newArray.sort((a: Item, b: Item) => {
+      return a.id - b.id;
+    });
+
+    return pushArray;
   };
 
-  const updateItem = (
-    id: number,
-    category: string,
-    product: string,
-    price: string
-  ) => {
+  const getData = async () => {
+    const querySnapshot = await getDocs(collection(db, "buy"));
+    const itemsArray = fetchSnapshot(querySnapshot);
+    setData(itemsArray);
+  };
+
+  const addItem = async (newItem: Item) => {
     setcompleted(false);
 
-    const getIndex = data.findIndex((item) => item.id === id);
+    const querySnapshot = await getDocs(collection(db, "buy"));
+    const itemsArray = fetchSnapshot(querySnapshot);
 
-    const newItem = { id, category, product, price };
+    let getId: number = itemsArray.reduce((max: number, item: Item) => {
+      if (item.id > max) max = item.id;
+      return ++max;
+    }, 1);
 
+    const newObj = { ...newItem, id: getId };
+    const newArray = [...data];
+    newArray.push(newObj);
+
+    try {
+      await setDoc(doc(buyRef, `${newObj.id}`), newObj);
+
+      await addDoc(buyRef, newObj);
+      setData(newArray);
+      setcompleted(true);
+      setDisplay("");
+    } catch (e) {}
+  };
+
+  const updateItem = async (newItem: Item) => {
+    setcompleted(false);
+
+    const getIndex = data.findIndex((item: Item) => item.id === newItem.id);
     const newArray = [
       ...data.slice(0, getIndex),
       newItem,
       ...data.slice(getIndex + 1),
     ];
 
-    setData(newArray);
+    const upd = { ...newItem };
+    upd.id = +upd.id;
+
+    try {
+      await setDoc(doc(buyRef, `${upd.id}`), upd);
+
+      setData(newArray);
+      setDisplay("");
+    } catch {}
   };
 
-  const deleteItem = (id: number) => {
+  const deleteItem = async (newItem: Item) => {
     setcompleted(false);
 
-    const getIndex = data.findIndex((item) => item.id === id);
-    const newArray = [...data];
-    newArray.splice(getIndex, 1);
+    try {
+      await deleteDoc(doc(buyRef, `${newItem.id}`));
+      const getIndex = data.findIndex((item: Item) => item.id === newItem.id);
+      const newArray = [...data];
+      newArray.splice(getIndex, 1);
 
-    setData(newArray);
+      setData(newArray);
+      setDisplay("");
+    } catch {}
   };
 
-  return (
-    <>
-      {!completed ? (
-        <Spinner />
-      ) : (
-        <div className='table-responsive'>
-          <div className='table-wrapper'>
-            <Container className='buyList mt-1 mb-1'>
-              <table className='table table-striped'>
-                <thead>
-                  <tr>
-                    <th scope='col'>Nr.</th>
-                    <th scope='col'>Category</th>
-                    <th scope='col'>Product</th>
-                    <th scope='col'>Price</th>
-                    <th scope='col'>
-                      <a onClick={() => addItem()}>Add</a>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((item, index) => (
-                    <BuyItem
-                      key={item.id}
-                      index={index}
-                      updateItem={updateItem}
-                      deleteItem={deleteItem}
-                    >
-                      {item}
-                    </BuyItem>
-                  ))}
-                </tbody>
-              </table>
-            </Container>
+  const setCreate = () => {
+    const item = { ...defItem };
+    setCurrent(item);
+    setDisplay("create");
+  };
+
+  const setModify = (item: Item) => {
+    setCurrent(item);
+    setDisplay("modify");
+  };
+
+  const closeDisplay = () => {
+    setDisplay("");
+  };
+
+  const renderModify = () => {
+    if (display) {
+      return (
+        <BuyModify
+          display={display}
+          addItem={addItem}
+          updateItem={updateItem}
+          deleteItem={deleteItem}
+          closeDisplay={closeDisplay}
+        >
+          {current}
+        </BuyModify>
+      );
+    }
+  };
+
+  const renderItems = () => {
+    return (
+      <Fragment>
+        <Container className='buyList mt-1 mb-1'>
+          <div className='table-responsive'>
+            <Table className='table-striped'>
+              <thead
+                onClick={() => {
+                  setCreate();
+                }}
+              >
+                <tr>
+                  <th scope='col'>Nr.</th>
+                  <th scope='col'>Category</th>
+                  <th scope='col'>Product</th>
+                  <th scope='col'>X</th>
+                  <th scope='col'>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((item: Item, index: Number) => (
+                  <BuyItem key={item.id} index={index} setModify={setModify}>
+                    {item}
+                  </BuyItem>
+                ))}
+              </tbody>
+            </Table>
           </div>
-        </div>
-      )}
-    </>
-  );
+          {renderModify()}
+        </Container>
+      </Fragment>
+    );
+  };
+
+  return <>{!completed ? <Spinner /> : renderItems()}</>;
 };
 
 export default BuyList;

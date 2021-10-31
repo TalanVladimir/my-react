@@ -6,8 +6,6 @@ $sizes: (
   "xl": 1200px,
 );
 
-$svg-size: 25px;
-
 @mixin media($minmax, $media) {
   @each $size, $resolution in $sizes {
     @if $media == $size {
@@ -27,15 +25,5 @@ $svg-size: 25px;
   input {
     width: auto;
     text-align: center;
-  }
-
-  svg {
-    width: $svg-size;
-    height: $svg-size;
-    margin: 2px;
-  }
-
-  .buttons {
-    display: flex;
   }
 }
