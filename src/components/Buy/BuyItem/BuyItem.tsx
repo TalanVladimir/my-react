@@ -1,10 +1,10 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React from "react";
 
 import "./styles.scss";
 
 const BuyItem = (props: any) => {
   const { children, setModify } = props;
-  const { id, category, product, multiply, price } = children;
+  const { category, product, multiply, price } = children;
   const { index } = props;
 
   return (
