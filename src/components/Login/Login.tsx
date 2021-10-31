@@ -6,7 +6,6 @@ import { Link, useHistory } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, login } from "../../services/firebase";
 
-// import { Spinner } from "react-bootstrap";
 import Spinner from "../Spinner";
 
 import "./styles.scss";
@@ -22,10 +21,7 @@ const Login = () => {
   const defEmail = "test@test.com";
   const defPassword = "TestTest123";
 
-  useEffect(() => {
-    setEmail(defEmail);
-    setPassword(defPassword);
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     if (loading) {
@@ -70,9 +66,28 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Group>
-          <Button variant='primary' type='submit' disabled={wrong}>
-            Login
-          </Button>
+          <Form.Group className='input-group'>
+            <Button
+              className='form-control'
+              variant='primary'
+              type='submit'
+              disabled={wrong}
+              onClick={() => {
+                setEmail(defEmail);
+                setPassword(defPassword);
+              }}
+            >
+              Test Login
+            </Button>
+            <Button
+              className='form-control'
+              variant='primary'
+              type='submit'
+              disabled={wrong}
+            >
+              Login
+            </Button>
+          </Form.Group>
           <Button
             variant='secondary'
             type='button'
