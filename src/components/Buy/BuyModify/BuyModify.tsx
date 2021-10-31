@@ -4,7 +4,20 @@ import { Button, Form } from "react-bootstrap";
 
 import "./styles.scss";
 
+import { db } from "../../../services/firebase";
+import {
+  query,
+  collection,
+  getDocs,
+  DocumentData,
+  QuerySnapshot,
+} from "firebase/firestore";
+
 import Item from "../Item";
+import Product from "../Product";
+
+const categoryRef = collection(db, "category");
+const productRef = collection(db, "product");
 
 const BuyModify = (props: any) => {
   const { display, addItem, updateItem, deleteItem, closeDisplay, children } =
@@ -16,13 +29,50 @@ const BuyModify = (props: any) => {
   const [multiply, setMultiply] = useState("");
   const [price, setPrice] = useState("");
 
+  const [productList, setProductList] = useState<Array<Product>>([]);
+
+  useEffect(() => {}, []);
+
   useEffect(() => {
     setId(children.id);
     setCategory(children.category);
     setProduct(children.product);
     setMultiply(children.multiply);
     setPrice(children.price);
+
+    getProductList();
   }, [children]);
+
+  const fetchProduct = (querySnapshot: QuerySnapshot<DocumentData> | any[]) => {
+    const newArray: Array<Product> = [];
+    querySnapshot.forEach((doc: any) => {
+      const { id, category, product } = doc.data();
+      const getItem = {
+        id,
+        category,
+        product,
+      };
+      newArray.push(getItem);
+    });
+
+    const pushArray = newArray.sort((a: Product, b: Product) => {
+      if (a.category < b.category) {
+        return -1;
+      }
+      if (a.category > b.category) {
+        return 1;
+      }
+      return 0;
+    });
+
+    return pushArray;
+  };
+
+  const getProductList = async () => {
+    const querySnapshot = await getDocs(query(productRef));
+    const newProductList = fetchProduct(querySnapshot);
+    setProductList(newProductList);
+  };
 
   const setModalTitle = () => {
     switch (display) {
@@ -120,85 +170,120 @@ const BuyModify = (props: any) => {
           >
             <div className='col-auto'>
               <div className='input-group mb-2'>
-                <div className='input-group-prepend' style={{ width: "90px" }}>
-                  <div
-                    className='input-group-text'
-                    style={{ justifyContent: "center" }}
-                  >
-                    Category
-                  </div>
-                </div>
                 <input
+                  id='category_id'
                   type='text'
                   className='form-control'
                   placeholder='Category'
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  list='team_list'
+                  list='caterogy_list'
                 />
-                <datalist id='team_list'>
-                  <option>Beaf</option>
-                  <option>Mild</option>
-                  <option>Another</option>
-                  <option>Kita</option>
+                <datalist id='caterogy_list'>
+                  {productList.map((item: Product) => (
+                    <option key={item.id}>{item.category}</option>
+                  ))}
                 </datalist>
-              </div>
-            </div>
-            <div className='col-auto'>
-              <div className='input-group mb-2'>
                 <div className='input-group-prepend' style={{ width: "90px" }}>
                   <div
                     className='input-group-text'
                     style={{ justifyContent: "center" }}
+                    onClick={() => {
+                      setCategory("");
+                      document.getElementById("category_id")?.focus();
+                    }}
                   >
-                    Product
+                    Category
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className='col-auto'>
+              <div className='input-group mb-2'>
                 <input
+                  id='product_id'
                   type='text'
                   className='form-control'
                   placeholder='Category'
                   value={product}
-                  onChange={(e) => setProduct(e.target.value)}
+                  onChange={(e) => {
+                    const newVal = e.target.value;
+                    setProduct(e.target.value);
+                    productList.filter((item) => {
+                      if (item.product == newVal) {
+                        setCategory(item.category);
+                        return;
+                      }
+                    });
+                  }}
+                  list='product_list'
                 />
-              </div>
-            </div>
-            <div className='col-auto'>
-              <div className='input-group mb-2'>
+                <datalist id='product_list'>
+                  {productList.map((item: Product) => (
+                    <option key={item.id}>{item.product}</option>
+                  ))}
+                </datalist>
+
                 <div className='input-group-prepend' style={{ width: "90px" }}>
                   <div
                     className='input-group-text'
                     style={{ justifyContent: "center" }}
+                    onClick={() => {
+                      setProduct("");
+                      document.getElementById("product_id")?.focus();
+                    }}
                   >
                     Product
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className='col-auto'>
+              <div className='input-group mb-2'>
                 <input
-                  type='text'
+                  id='multiply_id'
+                  type='number'
                   className='form-control'
                   placeholder='Category'
                   value={multiply}
                   onChange={(e) => setMultiply(e.target.value)}
                 />
-              </div>
-            </div>
-            <div className='col-auto'>
-              <div className='input-group mb-2'>
                 <div className='input-group-prepend' style={{ width: "90px" }}>
                   <div
                     className='input-group-text'
                     style={{ justifyContent: "center" }}
+                    onClick={() => {
+                      setMultiply("");
+                      document.getElementById("multiply_id")?.focus();
+                    }}
                   >
-                    Price
+                    Multiply
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className='col-auto'>
+              <div className='input-group mb-2'>
                 <input
+                  id='price_id'
                   type='number'
                   className='form-control'
                   placeholder='Category'
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                 />
+                <div className='input-group-prepend' style={{ width: "90px" }}>
+                  <div
+                    className='input-group-text'
+                    style={{ justifyContent: "center" }}
+                    onClick={() => {
+                      setPrice("");
+                      document.getElementById("price_id")?.focus();
+                    }}
+                  >
+                    Price
+                  </div>
+                </div>
               </div>
             </div>
           </div>
