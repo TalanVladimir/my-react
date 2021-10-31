@@ -9,7 +9,6 @@ import {
   where,
   collection,
   doc,
-  addDoc,
   setDoc,
   getDocs,
   deleteDoc,
@@ -22,10 +21,14 @@ import BuyItem from "../BuyItem";
 import BuyModify from "../BuyModify";
 
 const buyRef = collection(db, "buy");
+const categoryRef = collection(db, "category");
+const productRef = collection(db, "product");
 
 const defItem = { category: "", product: "", multiply: "", price: "" };
 
 import Item from "../Item";
+
+import Product from "../Product";
 
 const BuyList = () => {
   const [data, setData] = useState<Array<Item>>([]);
@@ -59,16 +62,66 @@ const BuyList = () => {
     });
 
     const pushArray = newArray.sort((a: Item, b: Item) => {
-      return a.id - b.id;
+      if (a.category < b.category) {
+        return -1;
+      }
+      if (a.category > b.category) {
+        return 1;
+      }
+      return 0;
     });
 
     return pushArray;
   };
 
   const getData = async () => {
-    const querySnapshot = await getDocs(collection(db, "buy"));
+    const querySnapshot = await getDocs(query(collection(db, "buy")));
     const itemsArray = fetchSnapshot(querySnapshot);
     setData(itemsArray);
+  };
+
+  const addNewProduct = async (newItem: Item) => {
+    const querySnapshot = await getDocs(
+      query(
+        productRef,
+        where("category", "==", newItem.category),
+        where("product", "==", newItem.product)
+      )
+    );
+    let isId = false;
+    querySnapshot.forEach((doc) => {
+      isId = true;
+    });
+
+    if (!isId) {
+      const querySnapshot = await getDocs(query(productRef));
+
+      const newArray: Array<Product> = [];
+      querySnapshot.forEach((doc: any) => {
+        const { id, category, product } = doc.data();
+        const getItem = {
+          id,
+          category,
+          product,
+        };
+        newArray.push(getItem);
+      });
+
+      let getId: number = newArray.reduce((max: number, item: Product) => {
+        if (item.id > max) max = item.id;
+        return ++max;
+      }, 1);
+
+      const newObj = {
+        id: getId,
+        category: newItem.category,
+        product: newItem.product,
+      };
+
+      try {
+        await setDoc(doc(productRef, `${newObj.id}`), newObj);
+      } catch {}
+    }
   };
 
   const addItem = async (newItem: Item) => {
@@ -86,10 +139,10 @@ const BuyList = () => {
     const newArray = [...data];
     newArray.push(newObj);
 
+    addNewProduct(newItem);
+
     try {
       await setDoc(doc(buyRef, `${newObj.id}`), newObj);
-
-      await addDoc(buyRef, newObj);
       setData(newArray);
       setcompleted(true);
       setDisplay("");
@@ -109,9 +162,10 @@ const BuyList = () => {
     const upd = { ...newItem };
     upd.id = +upd.id;
 
+    addNewProduct(newItem);
+
     try {
       await setDoc(doc(buyRef, `${upd.id}`), upd);
-
       setData(newArray);
       setDisplay("");
     } catch {}
@@ -125,7 +179,6 @@ const BuyList = () => {
       const getIndex = data.findIndex((item: Item) => item.id === newItem.id);
       const newArray = [...data];
       newArray.splice(getIndex, 1);
-
       setData(newArray);
       setDisplay("");
     } catch {}
