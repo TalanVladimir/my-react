@@ -152,6 +152,38 @@ const BuyModify = (props: any) => {
     }
   };
 
+  const sortProducts = (array: Array<Product>) => {
+    return array.sort((a: Product, b: Product) => {
+      if (a.product < b.product) {
+        return -1;
+      }
+      if (a.product > b.product) {
+        return 1;
+      }
+      return 0;
+    });
+  };
+
+  const sortCategories = (array: Array<Product>) => {
+    return array.sort((a: Product, b: Product) => {
+      if (a.category < b.category) {
+        return -1;
+      } else if (a.category > b.category) {
+        return 1;
+      }
+      return 0;
+    });
+  };
+
+  const getUniqueProducts = () => {
+    const unique = productList.filter(
+      (elem, index) =>
+        productList.findIndex((obj) => obj.category === elem.category) === index
+    );
+
+    return sortCategories(unique);
+  };
+
   return (
     <div
       className={`modal fade${display !== "" ? " show" : ""}`}
@@ -175,12 +207,13 @@ const BuyModify = (props: any) => {
                   type='text'
                   className='form-control'
                   placeholder='Category'
+                  autoComplete='off'
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   list='caterogy_list'
                 />
                 <datalist id='caterogy_list'>
-                  {productList.map((item: Product) => (
+                  {getUniqueProducts().map((item: Product) => (
                     <option key={item.id}>{item.category}</option>
                   ))}
                 </datalist>
@@ -206,6 +239,7 @@ const BuyModify = (props: any) => {
                   className='form-control'
                   placeholder='Category'
                   value={product}
+                  autoComplete='off'
                   onChange={(e) => {
                     const newVal = e.target.value;
                     setProduct(e.target.value);
@@ -219,7 +253,7 @@ const BuyModify = (props: any) => {
                   list='product_list'
                 />
                 <datalist id='product_list'>
-                  {productList.map((item: Product) => (
+                  {sortProducts(productList).map((item: Product) => (
                     <option key={item.id}>{item.product}</option>
                   ))}
                 </datalist>
