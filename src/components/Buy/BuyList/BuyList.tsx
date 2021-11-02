@@ -21,7 +21,6 @@ import BuyItem from "../BuyItem";
 import BuyModify from "../BuyModify";
 
 const buyRef = collection(db, "buy");
-const categoryRef = collection(db, "category");
 const productRef = collection(db, "product");
 
 const defItem = { category: "", product: "", multiply: "", price: "" };
@@ -45,6 +44,24 @@ const BuyList = () => {
     setcompleted(true);
   }, [data]);
 
+  const sortProducts = (array: Array<Item>) => {
+    return array.sort((a: Item, b: Item) => {
+      if (a.category < b.category) {
+        return -1;
+      } else if (a.category > b.category) {
+        return 1;
+      } else {
+        if (a.product < b.product) {
+          return -1;
+        }
+        if (a.product > b.product) {
+          return 1;
+        }
+        return 0;
+      }
+    });
+  };
+
   const fetchSnapshot = (
     querySnapshot: QuerySnapshot<DocumentData> | any[]
   ) => {
@@ -61,17 +78,7 @@ const BuyList = () => {
       newArray.push(getItem);
     });
 
-    const pushArray = newArray.sort((a: Item, b: Item) => {
-      if (a.category < b.category) {
-        return -1;
-      }
-      if (a.category > b.category) {
-        return 1;
-      }
-      return 0;
-    });
-
-    return pushArray;
+    return sortProducts(newArray);
   };
 
   const getData = async () => {
@@ -143,7 +150,7 @@ const BuyList = () => {
 
     try {
       await setDoc(doc(buyRef, `${newObj.id}`), newObj);
-      setData(newArray);
+      setData(sortProducts(newArray));
       setcompleted(true);
       setDisplay("");
     } catch (e) {}
@@ -166,7 +173,7 @@ const BuyList = () => {
 
     try {
       await setDoc(doc(buyRef, `${upd.id}`), upd);
-      setData(newArray);
+      setData(sortProducts(newArray));
       setDisplay("");
     } catch {}
   };
@@ -179,7 +186,7 @@ const BuyList = () => {
       const getIndex = data.findIndex((item: Item) => item.id === newItem.id);
       const newArray = [...data];
       newArray.splice(getIndex, 1);
-      setData(newArray);
+      setData(sortProducts(newArray));
       setDisplay("");
     } catch {}
   };
