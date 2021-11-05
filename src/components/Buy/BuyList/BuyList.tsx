@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Container, Table, Button, Tab } from "react-bootstrap";
+import { Container, Table } from "react-bootstrap";
 
 import "./styles.scss";
 
@@ -29,11 +29,10 @@ import Item from "../Item";
 
 import Product from "../Product";
 
-const BuyList = () => {
+const BuyList = (props: any) => {
   const [data, setData] = useState<Array<Item>>([]);
   const [current, setCurrent] = useState({});
   const [completed, setcompleted] = useState<boolean>(false);
-
   const [display, setDisplay] = useState<string>("");
 
   useEffect(() => {
@@ -41,7 +40,7 @@ const BuyList = () => {
   }, []);
 
   useEffect(() => {
-    setcompleted(true);
+    setTimeout(() => setcompleted(true), 100);
   }, [data]);
 
   const sortProducts = (array: Array<Item>) => {
@@ -82,6 +81,7 @@ const BuyList = () => {
   };
 
   const getData = async () => {
+    setcompleted(false);
     const querySnapshot = await getDocs(query(collection(db, "buy")));
     const itemsArray = fetchSnapshot(querySnapshot);
     setData(itemsArray);
@@ -151,7 +151,6 @@ const BuyList = () => {
     try {
       await setDoc(doc(buyRef, `${newObj.id}`), newObj);
       setData(sortProducts(newArray));
-      setcompleted(true);
       setDisplay("");
     } catch (e) {}
   };
