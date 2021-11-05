@@ -27,9 +27,11 @@ const Login = () => {
     if (loading) {
       return;
     }
+  }, [loading]);
 
+  useEffect(() => {
     if (user) history.replace("/buy");
-  }, [user, loading]);
+  }, [user]);
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -49,7 +51,6 @@ const Login = () => {
         <Form className='login' onSubmit={handleSubmit}>
           <Form.Group>
             <Form.Control
-              defaultValue={defEmail}
               type='text'
               placeholder='Email'
               value={email}
@@ -59,7 +60,6 @@ const Login = () => {
 
           <Form.Group>
             <Form.Control
-              defaultValue={defPassword}
               type='password'
               placeholder='Password'
               value={password}
