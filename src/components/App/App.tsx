@@ -27,7 +27,7 @@ const App = () => {
 
           <Route path='/buy' component={BuyPage} />
           <Route path='/financies' component={FinanciesPage} />
-          <Route path='/account' component={ProfilePage} />
+          <Route path='/profile' component={ProfilePage} />
           <Route path='*'>
             <Redirect to='/buy' />
           </Route>

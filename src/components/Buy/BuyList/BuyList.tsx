@@ -16,6 +16,10 @@ import {
   QuerySnapshot,
 } from "firebase/firestore";
 
+import { connect } from "react-redux";
+import mapStateToProps from "../../../store/mapStateToProps";
+import mapDispatchToProps from "../../../store/mapDispatchToProps";
+
 import Spinner from "../../Spinner";
 import BuyItem from "../BuyItem";
 import BuyModify from "../BuyModify";
@@ -36,11 +40,13 @@ const BuyList = (props: any) => {
   const [display, setDisplay] = useState<string>("");
 
   useEffect(() => {
+    props.change_page("Buy");
     getData();
   }, []);
 
   useEffect(() => {
     setTimeout(() => setcompleted(true), 100);
+    props.change_value(data.length);
   }, [data]);
 
   const sortProducts = (array: Array<Item>) => {
@@ -258,4 +264,7 @@ const BuyList = (props: any) => {
   return <>{!completed ? <Spinner /> : renderItems()}</>;
 };
 
-export default BuyList;
+export default connect(
+  mapStateToProps(BuyList),
+  mapDispatchToProps(BuyList)
+)(BuyList);

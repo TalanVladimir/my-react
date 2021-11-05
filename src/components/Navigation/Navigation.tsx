@@ -12,7 +12,7 @@ import { logout } from "../../services/firebase";
 
 import "./styles.scss";
 
-const Navigation = ({ value }) => {
+const Navigation = ({ value, page }) => {
   const isGit = document.location.host === "talanvladimir.github.io";
   const history = useHistory();
 
@@ -36,7 +36,7 @@ const Navigation = ({ value }) => {
         >
           <Nav.Item>
             <Nav.Link as={Link} to='/buy'>
-              {value}
+              {value !== 0 ? `${value} Items` : ""}
             </Nav.Link>
           </Nav.Item>
         </Nav>
@@ -46,17 +46,29 @@ const Navigation = ({ value }) => {
           className='d-inline-flex ms-md-auto'
         >
           <Nav.Item>
-            <Nav.Link as={Link} to='/buy'>
+            <Nav.Link
+              as={Link}
+              to='/buy'
+              className={page === "Buy" ? "active" : ""}
+            >
               Buy
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={Link} to='/financies'>
+            <Nav.Link
+              as={Link}
+              to='/financies'
+              className={page === "Financies" ? "active" : ""}
+            >
               Financies
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
-            <Nav.Link as={Link} to='/account'>
+            <Nav.Link
+              as={Link}
+              to='/profile'
+              className={page === "Profile" ? "active" : ""}
+            >
               Profile
             </Nav.Link>
           </Nav.Item>

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Button, Container, Form, Row } from "react-bootstrap";
 
+import { User } from "@firebase/auth/dist/auth-public";
 import { auth, update, send } from "../../services/firebase";
 
-import { User } from "@firebase/auth/dist/auth-public";
+import { connect } from "react-redux";
+import mapStateToProps from "../../store/mapStateToProps";
+import mapDispatchToProps from "../../store/mapDispatchToProps";
 
 import Spinner from "../Spinner";
 
@@ -11,7 +14,7 @@ import "./styles.scss";
 
 import defPhoto from "../../images/default_user.png";
 
-const Account = () => {
+const Account = ({ change_page }) => {
   const [name, setName] = useState<string | undefined>(undefined);
   const [email, setEmail] = useState<string | undefined>(undefined);
   const [photo, setPhoto] = useState<string | undefined>(defPhoto);
@@ -31,6 +34,7 @@ const Account = () => {
   };
 
   useEffect(() => {
+    change_page("Profile");
     updateUser();
   }, []);
 
@@ -151,4 +155,7 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default connect(
+  mapStateToProps(Account),
+  mapDispatchToProps(Account)
+)(Account);
