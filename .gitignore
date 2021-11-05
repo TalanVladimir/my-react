@@ -1,3 +1,4 @@
 node_modules
 dist
-src/services/firebase.config.js
+omw
+src/services/firebase.config.tsx
