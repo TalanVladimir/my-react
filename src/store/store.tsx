@@ -5,6 +5,6 @@ const store = createStore(reducers);
 
 export default store;
 
-store.subscribe(() =>
-  console.log(`store: ${JSON.stringify(store.getState())}`)
-);
+// store.subscribe(() =>
+//   console.log(`store: ${JSON.stringify(store.getState())}`)
+// );

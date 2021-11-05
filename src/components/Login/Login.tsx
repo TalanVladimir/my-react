@@ -6,11 +6,15 @@ import { Link, useHistory } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, login } from "../../services/firebase";
 
+import { connect } from "react-redux";
+import mapStateToProps from "../../store/mapStateToProps";
+import mapDispatchToProps from "../../store/mapDispatchToProps";
+
 import Spinner from "../Spinner";
 
 import "./styles.scss";
 
-const Login = () => {
+const Login = (props) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [user, loading, error] = useAuthState(auth);
@@ -21,17 +25,19 @@ const Login = () => {
   const defEmail = "test@test.com";
   const defPassword = "TestTest123";
 
+  const { change_user } = props;
+
   useEffect(() => {}, []);
 
   useEffect(() => {
     if (loading) {
       return;
     }
-  }, [loading]);
-
-  useEffect(() => {
-    if (user) history.replace("/buy");
-  }, [user]);
+    if (user) {
+      change_user(user);
+      history.replace("/buy");
+    }
+  }, [loading, user]);
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -103,4 +109,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default connect(
+  mapStateToProps(Login),
+  mapDispatchToProps(Login)
+)(Login);

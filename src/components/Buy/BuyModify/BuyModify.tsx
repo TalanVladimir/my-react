@@ -13,15 +13,25 @@ import {
   QuerySnapshot,
 } from "firebase/firestore";
 
+import { connect } from "react-redux";
+import mapStateToProps from "../../../store/mapStateToProps";
+import mapDispatchToProps from "../../../store/mapDispatchToProps";
+
 import Item from "../Item";
 import Product from "../Product";
 
-const categoryRef = collection(db, "category");
 const productRef = collection(db, "product");
 
 const BuyModify = (props: any) => {
-  const { display, addItem, updateItem, deleteItem, closeDisplay, children } =
-    props;
+  const {
+    display,
+    addItem,
+    updateItem,
+    deleteItem,
+    closeDisplay,
+    children,
+    email,
+  } = props;
 
   const [id, setId] = useState<number>(0);
   const [category, setCategory] = useState("");
@@ -93,7 +103,14 @@ const BuyModify = (props: any) => {
             type='button'
             className='btn btn-warning'
             onClick={() => {
-              const newItem: Item = { id, category, product, multiply, price };
+              const newItem: Item = {
+                id,
+                category,
+                product,
+                multiply,
+                price,
+                email,
+              };
               addItem(newItem);
             }}
           >
@@ -123,6 +140,7 @@ const BuyModify = (props: any) => {
                   product,
                   multiply,
                   price,
+                  email,
                 };
                 addItem(newItem);
               }}
@@ -139,6 +157,7 @@ const BuyModify = (props: any) => {
                   product,
                   multiply,
                   price,
+                  email,
                 };
                 updateItem(newItem);
               }}
@@ -338,4 +357,7 @@ const BuyModify = (props: any) => {
   );
 };
 
-export default BuyModify;
+export default connect(
+  mapStateToProps(BuyModify),
+  mapDispatchToProps(BuyModify)
+)(BuyModify);

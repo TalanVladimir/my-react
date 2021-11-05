@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 
@@ -10,11 +10,45 @@ import Icon from "../../images/logo.png";
 
 import { logout } from "../../services/firebase";
 
+import { auth, login } from "../../services/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+
 import "./styles.scss";
 
-const Navigation = ({ value, page }) => {
+const Navigation = ({
+  user,
+  value,
+  page,
+  change_user,
+  change_email,
+}): JSX.Element => {
   const isGit = document.location.host === "talanvladimir.github.io";
   const history = useHistory();
+
+  const [name, setName] = useState("");
+
+  const check_user = () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        change_user(user);
+        change_email(user.email);
+        const uid = user.uid;
+
+        setName(user.displayName);
+      } else {
+        logout().then(() => {
+          setTimeout(
+            () => history.replace(isGit ? "/new-react/" : "/login"),
+            100
+          );
+        });
+      }
+    });
+  };
+
+  useEffect(() => {
+    check_user();
+  }, []);
 
   return (
     <Navbar sticky='top' bg='dark' variant='dark' className='navbar-inverse'>
@@ -35,8 +69,8 @@ const Navigation = ({ value, page }) => {
           className='d-inline-flex ms-md-auto'
         >
           <Nav.Item>
-            <Nav.Link as={Link} to='/buy'>
-              {value !== 0 ? `${value} Items` : ""}
+            <Nav.Link as={Link} to='/profile'>
+              {name}
             </Nav.Link>
           </Nav.Item>
         </Nav>

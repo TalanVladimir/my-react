@@ -4,6 +4,7 @@ interface Item {
   product: string;
   multiply: string;
   price: string;
+  email: string;
 }
 
 export default Item;

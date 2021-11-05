@@ -39,15 +39,19 @@ const BuyList = (props: any) => {
   const [completed, setcompleted] = useState<boolean>(false);
   const [display, setDisplay] = useState<string>("");
 
+  const { email } = props;
+
   useEffect(() => {
     props.change_page("Buy");
-    getData();
   }, []);
 
   useEffect(() => {
     setTimeout(() => setcompleted(true), 100);
-    props.change_value(data.length);
   }, [data]);
+
+  useEffect(() => {
+    getData();
+  }, [props.email]);
 
   const sortProducts = (array: Array<Item>) => {
     return array.sort((a: Item, b: Item) => {
@@ -72,13 +76,14 @@ const BuyList = (props: any) => {
   ) => {
     const newArray: Array<Item> = [];
     querySnapshot.forEach((doc: any) => {
-      const { id, category, product, multiply, price } = doc.data();
+      const { id, category, product, multiply, price, email } = doc.data();
       const getItem = {
         id,
         category,
         product,
         multiply,
         price,
+        email,
       };
       newArray.push(getItem);
     });
@@ -87,8 +92,12 @@ const BuyList = (props: any) => {
   };
 
   const getData = async () => {
-    setcompleted(false);
-    const querySnapshot = await getDocs(query(collection(db, "buy")));
+    const querySnapshot = await getDocs(
+      query(
+        collection(db, "buy"),
+        where("email", "in", [email, "vovkus@gmail.com"])
+      )
+    );
     const itemsArray = fetchSnapshot(querySnapshot);
     setData(itemsArray);
   };
