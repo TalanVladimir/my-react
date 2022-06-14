@@ -17,8 +17,9 @@ import { connect } from "react-redux";
 import mapStateToProps from "../../../store/mapStateToProps";
 import mapDispatchToProps from "../../../store/mapDispatchToProps";
 
-import Item from "../Item";
-import Product from "../Product";
+import { Item, Product } from "../../../types/Buy.types";
+
+import { sortProducts, sortCategories } from "./Utils";
 
 const productRef = collection(db, "product");
 
@@ -169,29 +170,6 @@ const BuyModify = (props: any) => {
       default:
         return "";
     }
-  };
-
-  const sortProducts = (array: Array<Product>) => {
-    return array.sort((a: Product, b: Product) => {
-      if (a.product < b.product) {
-        return -1;
-      }
-      if (a.product > b.product) {
-        return 1;
-      }
-      return 0;
-    });
-  };
-
-  const sortCategories = (array: Array<Product>) => {
-    return array.sort((a: Product, b: Product) => {
-      if (a.category < b.category) {
-        return -1;
-      } else if (a.category > b.category) {
-        return 1;
-      }
-      return 0;
-    });
   };
 
   const getUniqueProducts = () => {

@@ -1,11 +1,13 @@
-$gap: 10px;
+.register-form {
+  justify-content: center;
+  min-height: 90vh;
 
-.profile {
-  // margin: $gap;
-
-  form {
-    // display: flex;
-    // flex-direction: column;
-    // gap: $gap;
+  .button-block {
+    width: 100%;
+  }
+  .register-background {
+    justify-content: center;
+    min-height: 30vh;
+    padding: 50px;
   }
 }

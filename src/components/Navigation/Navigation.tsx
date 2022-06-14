@@ -1,27 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 import { connect } from "react-redux";
 import mapStateToProps from "../../store/mapStateToProps";
 import mapDispatchToProps from "../../store/mapDispatchToProps";
 
+import * as Material from "@mui/material";
+
 import Icon from "../../images/logo.png";
 
 import { logout } from "../../services/firebase";
 
-import { auth, login } from "../../services/firebase";
+import { auth } from "../../services/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 import "./styles.scss";
 
-const Navigation = ({
-  user,
-  value,
-  page,
-  change_user,
-  change_email,
-}): JSX.Element => {
+const Navigation = (props: any): JSX.Element => {
+  const { user, value, page, change_user, change_email } = props;
   const isGit = document.location.host === "talanvladimir.github.io";
   const history = useHistory();
 
@@ -51,78 +47,79 @@ const Navigation = ({
   }, []);
 
   return (
-    <Navbar sticky='top' bg='dark' variant='dark' className='navbar-inverse'>
-      <Container className='flex-wrap' style={{ justifyContent: "center" }}>
-        <Navbar.Brand>
-          <img
-            src={Icon}
-            width='30'
-            height='30'
-            className='d-inline-block align-top'
-            alt='React Bootstrap logo'
-          />{" "}
-          My Financies
-        </Navbar.Brand>
-        <Nav
-          variant='pills'
-          activeKey={location.pathname}
-          className='d-inline-flex ms-md-auto'
-        >
-          <Nav.Item>
-            <Nav.Link as={Link} to='/profile'>
-              {name}
-            </Nav.Link>
-          </Nav.Item>
-        </Nav>
-        <Nav
-          variant='pills'
-          activeKey={location.pathname}
-          className='d-inline-flex ms-md-auto'
-        >
-          <Nav.Item>
-            <Nav.Link
-              as={Link}
+    <Fragment>
+      <Material.AppBar
+        position='sticky'
+        color='default'
+        elevation={0}
+        sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
+      >
+        <Material.Toolbar sx={{ flexWrap: "wrap" }}>
+          <Material.Typography
+            variant='h6'
+            color='text.secondary'
+            noWrap
+            style={{ display: "flex", gap: "5px", alignItems: "center" }}
+            sx={{ flexGrow: 1 }}
+          >
+            <img
+              src={Icon}
+              width='30'
+              height='30'
+              className='d-inline-block align-top'
+              alt='React Bootstrap logo'
+            />{" "}
+            My Financies
+          </Material.Typography>
+          <nav>
+            <Material.Link
+              component={Link}
+              variant='button'
+              color='text.primary'
               to='/buy'
-              className={page === "Buy" ? "active" : ""}
+              sx={{ my: 1, mx: 1.5 }}
             >
               Buy
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={Link}
+            </Material.Link>
+            <Material.Link
+              component={Link}
+              variant='button'
+              color='text.primary'
               to='/financies'
-              className={page === "Financies" ? "active" : ""}
+              sx={{ my: 1, mx: 1.5 }}
             >
               Financies
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              as={Link}
+            </Material.Link>
+            <Material.Link
+              component={Link}
+              variant='button'
+              color='text.primary'
               to='/profile'
-              className={page === "Profile" ? "active" : ""}
+              sx={{ my: 1, mx: 1.5 }}
             >
               Profile
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              onClick={() =>
-                logout().then(() => {
-                  setTimeout(
-                    () => history.replace(isGit ? "/new-react/" : "/login"),
-                    100
-                  );
-                })
-              }
-            >
-              Logout
-            </Nav.Link>
-          </Nav.Item>
-        </Nav>
-      </Container>
-    </Navbar>
+            </Material.Link>
+          </nav>
+          <Material.Link
+            component={Link}
+            variant='button'
+            color='text.primary'
+            to='/'
+            onClick={() =>
+              logout().then(() => {
+                setTimeout(
+                  () => history.replace(isGit ? "/new-react/" : "/login"),
+                  100
+                );
+              })
+            }
+            sx={{ my: 1, mx: 1.5 }}
+          >
+            Log out
+          </Material.Link>
+        </Material.Toolbar>
+      </Material.AppBar>
+    </Fragment>
   );
 };
 

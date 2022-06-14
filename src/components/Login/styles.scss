@@ -1,33 +1,13 @@
-$borders-radius: 5px;
+.login-form {
+  justify-content: center;
+  min-height: 90vh;
 
-.login {
-  background: #fff;
-  top: 50%;
-  margin-top: -96px;
-  height: 192px;
-  left: 50%;
-  margin-left: -140px;
-  position: absolute;
-  width: 280px;
-  padding: 10px;
-  text-align: center;
-  border-radius: 7px;
-  border: 3px solid #000;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  font-weight: 900;
-
-  input {
-    text-align: center;
+  .button-block {
+    width: 100%;
   }
-
-  a,
-  a:link,
-  a:visited,
-  a:hover,
-  a:active {
-    text-decoration: none;
-    color: #fff;
+  .login-background {
+    justify-content: center;
+    min-height: 30vh;
+    padding: 50px;
   }
 }

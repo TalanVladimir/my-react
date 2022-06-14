@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-import { Form, Button } from "react-bootstrap";
-import { Link, useHistory } from "react-router-dom";
+import * as Material from "@mui/material";
+
+import { useHistory } from "react-router-dom";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, register } from "../../services/firebase";
@@ -35,35 +36,83 @@ const Register = () => {
   };
 
   return (
-    <Form className='register' onSubmit={handleSubmit}>
-      <Form.Group>
-        <Form.Control
-          type='text'
-          placeholder='Email'
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </Form.Group>
-
-      <Form.Group>
-        <Form.Control
-          type='password'
-          placeholder='Password'
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </Form.Group>
-      <Button variant='primary' type='submit' disabled={wrong}>
-        Register
-      </Button>
-      <Button
-        variant='secondary'
-        type='button'
-        onClick={() => {
-          history.replace("/login");
-        }}
-      >
-        Login Page
-      </Button>
-    </Form>
+    <Material.Grid
+      container
+      spacing={0}
+      style={{ justifyContent: "center", flexDirection: "row" }}
+    >
+      <Material.Grid item>
+        <Material.Grid
+          container
+          style={{ flexDirection: "column", justifyContent: "center" }}
+          spacing={2}
+          className='login-form'
+        >
+          <Material.Paper
+            variant='elevation'
+            elevation={2}
+            className='login-background'
+          >
+            <form className='login' onSubmit={handleSubmit}>
+              <Material.Grid container direction='column' spacing={2}>
+                <Material.Grid item>
+                  <Material.Typography component='h1' variant='h5'>
+                    Sign up
+                  </Material.Typography>
+                </Material.Grid>
+                <Material.Grid item>
+                  <Material.TextField
+                    type='email'
+                    placeholder='Email'
+                    fullWidth
+                    name='email'
+                    variant='outlined'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </Material.Grid>
+                <Material.Grid item>
+                  <Material.TextField
+                    type='password'
+                    placeholder='Password'
+                    fullWidth
+                    name='password'
+                    variant='outlined'
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </Material.Grid>
+                <Material.Grid item>
+                  <Material.Button
+                    variant='contained'
+                    color='primary'
+                    type='submit'
+                    className='button-block'
+                  >
+                    Register
+                  </Material.Button>
+                </Material.Grid>
+                <Material.Grid item>
+                  <Material.Button
+                    variant='contained'
+                    color='primary'
+                    type='submit'
+                    className='button-block'
+                    onClick={() => {
+                      history.replace("/login");
+                    }}
+                  >
+                    Login
+                  </Material.Button>
+                </Material.Grid>
+              </Material.Grid>
+            </form>
+          </Material.Paper>
+        </Material.Grid>
+      </Material.Grid>
+    </Material.Grid>
   );
 };
 

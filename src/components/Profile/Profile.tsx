@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Container, Form, Row } from "react-bootstrap";
+import { Container, Form, Row } from "react-bootstrap";
 
 import { User } from "@firebase/auth/dist/auth-public";
 import { auth, update, send } from "../../services/firebase";

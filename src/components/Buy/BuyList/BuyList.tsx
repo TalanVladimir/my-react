@@ -1,5 +1,7 @@
-import React, { Fragment, useState, useEffect } from "react";
-import { Container, Table } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+
+import * as Material from "@mui/material";
+import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 
 import "./styles.scss";
 
@@ -20,6 +22,8 @@ import { connect } from "react-redux";
 import mapStateToProps from "../../../store/mapStateToProps";
 import mapDispatchToProps from "../../../store/mapDispatchToProps";
 
+import { sortProducts } from "./Utils";
+
 import Spinner from "../../Spinner";
 import BuyItem from "../BuyItem";
 import BuyModify from "../BuyModify";
@@ -29,17 +33,13 @@ const productRef = collection(db, "product");
 
 const defItem = { category: "", product: "", multiply: "", price: "" };
 
-import Item from "../Item";
-
-import Product from "../Product";
+import { Item, Product } from "../../../types/Buy.types";
 
 const BuyList = (props: any) => {
   const [data, setData] = useState<Array<Item>>([]);
   const [current, setCurrent] = useState({});
   const [completed, setcompleted] = useState<boolean>(false);
   const [display, setDisplay] = useState<string>("");
-
-  const { email } = props;
 
   useEffect(() => {
     props.change_page("Buy");
@@ -52,24 +52,6 @@ const BuyList = (props: any) => {
   useEffect(() => {
     getData();
   }, [props.email]);
-
-  const sortProducts = (array: Array<Item>) => {
-    return array.sort((a: Item, b: Item) => {
-      if (a.category < b.category) {
-        return -1;
-      } else if (a.category > b.category) {
-        return 1;
-      } else {
-        if (a.product < b.product) {
-          return -1;
-        }
-        if (a.product > b.product) {
-          return 1;
-        }
-        return 0;
-      }
-    });
-  };
 
   const fetchSnapshot = (
     querySnapshot: QuerySnapshot<DocumentData> | any[]
@@ -92,11 +74,16 @@ const BuyList = (props: any) => {
   };
 
   const getData = async () => {
+    const emailArray = [];
+
+    const { email } = props;
+    emailArray.push(email);
+    if (email === "vovkus@gmail.com") {
+      emailArray.push("test@test.com");
+    }
+    console.log(JSON.stringify(email));
     const querySnapshot = await getDocs(
-      query(
-        collection(db, "buy"),
-        where("email", "in", [email, "vovkus@gmail.com"])
-      )
+      query(collection(db, "buy"), where("email", "in", emailArray))
     );
     const itemsArray = fetchSnapshot(querySnapshot);
     setData(itemsArray);
@@ -236,37 +223,63 @@ const BuyList = (props: any) => {
     }
   };
 
+  const rows: GridRowsProp = [
+    { id: 1, col1: "Hello", col2: "World" },
+    { id: 2, col1: "DataGridPro", col2: "is Awesome" },
+    { id: 3, col1: "MUI", col2: "is Amazing" },
+  ];
+
+  const columns: GridColDef[] = [
+    { field: "col1", headerName: "Column 1", width: 500 },
+    { field: "col2", headerName: "Column 2", width: 500 },
+  ];
+
   const renderItems = () => {
     return (
-      <Fragment>
-        <Container className='buyList mt-1 mb-1'>
-          <div className='table-responsive'>
-            <Table className='table-striped'>
-              <thead
-                onClick={() => {
-                  setCreate();
-                }}
-              >
-                <tr>
-                  <th scope='col'>Nr.</th>
-                  <th scope='col'>Category</th>
-                  <th scope='col'>Product</th>
-                  <th scope='col'>X</th>
-                  <th scope='col'>Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((item: Item, index: Number) => (
-                  <BuyItem key={item.id} index={index} setModify={setModify}>
-                    {item}
-                  </BuyItem>
-                ))}
-              </tbody>
-            </Table>
-          </div>
-          {renderModify()}
-        </Container>
-      </Fragment>
+      <Material.Grid container>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          checkboxSelection
+          onCellClick={(params, event) => {
+            if (!event.ctrlKey) {
+              event.defaultMuiPrevented = true;
+
+              alert(JSON.stringify(params.row));
+            }
+          }}
+        />
+        {/* <DataGrid rows={rows} columns={columns} /> */}
+      </Material.Grid>
+      // <Container className='buyList mt-1 mb-1'>
+      //   <div className='table-responsive'>
+      //     <Table className='table-striped'>
+      //       <thead
+      //         onClick={() => {
+      //           setCreate();
+      //         }}
+      //       >
+      //         <tr>
+      //           <th scope='col'>Nr.</th>
+      //           <th scope='col'>Category</th>
+      //           <th scope='col'>Product</th>
+      //           <th scope='col'>X</th>
+      //           <th scope='col'>Price</th>
+      //         </tr>
+      //       </thead>
+      //       <tbody>
+      //         {data.map((item: Item, index: Number) => (
+      //           <BuyItem key={item.id} index={index} setModify={setModify}>
+      //             {item}
+      //           </BuyItem>
+      //         ))}
+      //       </tbody>
+      //     </Table>
+      //   </div>
+      //   {renderModify()}
+      // </Container>
     );
   };
 

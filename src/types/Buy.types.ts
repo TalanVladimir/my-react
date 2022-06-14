@@ -7,4 +7,10 @@ interface Item {
   email: string;
 }
 
-export default Item;
+interface Product {
+  id: number;
+  category: string;
+  product: string;
+}
+
+export type { Item, Product };
